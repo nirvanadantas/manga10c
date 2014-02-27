@@ -1,27 +1,28 @@
 require 'gosu'
+
 class Jogador
-	def inicialize(janela)
-		@janela = janela
-		@imagem = Gosu::Image.new(self,"1.png",true)
-		@pos_x = @janela.width / 2
-    	@pos_y = @janela.height / 2
-    	@direcao = 1
+  attr_reader :x, :y
 
-	end
+  def initialize(window, x, y)
+    @x, @y = x, y
+    @dir = :right
+	@dir1, @dir2, @esq1, @esq2 =
+		*Gosu::Image.load_tiles(window, "img.png", 135, 141, false)
+	@cur_image = @dir1			#começa virado à direita
+	@placar = 0
+  end
+	def update
+		if (move_x > 0) then
+			@dir = :right
+			move_x.times do @x += 1 end 
+		end
+ 
+		if (move_x < 0) then
+			@dir = :left
+			(-move_x).times do @x -= 1 end 
+         end
+    end
 	def draw
-		@jogador.draw(@pos_x,230,1,@direcao)		
+		@cur_image.draw(@x, @y-134, 0, factor, 1.0)
 	end
-	def mover_direita		
-       @direcao=1
-        @pos_x = @pos_x + 10 
-      if (@pos_x > @janela.width-(@imagem.width+10) ) then 
-        @pos_x = @janela.width-(@imagem.width+10) 
-      end
-	end
-	def mover_esquerda		
-      @direcao=-1
-      @pos_x = @pos_x - 10 
-      if (@pos_x < 10) then @pos_x = 10 end
-	end
-
 end
