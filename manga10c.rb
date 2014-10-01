@@ -42,7 +42,7 @@ class Manga10c < Gosu::Window
 			@mangas << Manga.new(self)
 		end
   
-        @tempo += 1.0/60.0
+        @tempo += 1.0/10.0
         if (@tempo.to_i == 40) then
             @estado = "FIM" end
         elsif (@estado == "FIM") then
@@ -67,17 +67,17 @@ class Manga10c < Gosu::Window
         
         elsif (@estado == "FIM") then 
 			
-            msg = "FIM DE JOGO, VOCE FEZ #{@jogador.placar} pontos" 
-            if (@placar < 50) then
-                @fonte.draw("Voce foi pessimo, fez apenas #{"%.f" % @placar} pontos!",200,550,3,2.0,2.0,0xffffff00)
-            elsif (@placar > 50 and @placar <= 500 )then
-                @fonte.draw("Parabens voce joga bem! e fez #{"%.f" % @placar} pontos!",200,550,3,2.0,2.0,0xffffff00)
+            if (@jogador.placar < 50) then
+                msg ="Voce foi pessimo, fez apenas #{"%.f" % @jogador.placar} pontos!"
+            elsif (@jogador.placar > 50 and @jogador.placar < 500 )then
+                msg = "Parabens voce joga bem! e fez #{"%.f" % @jogador.placar} pontos!"
             else
-                @fonte.draw("Parabens voce e um ET! e fez #{"%.f" % @placar} pontos!",200,550,3,2.0,2.0,0xffffff00)
+                msg = "Parabens voce e um ET! e fez #{"%.f" % @jogador.placar} pontos!"
             end
-=begin
-                 x=(self.width)/2-((@fonte.text_width(msg,1)/2))
+            x=(self.width)/2-((@fonte.text_width(msg,1)/2))
             @fonte.draw(msg, x, self.height/2, 3, 1.0, 1.0, 0xffff0000)
+=begin
+            msg = "FIM DE JOGO, VOCE FEZ #{@jogador.placar} pontos" 
 =end
         end
     end
