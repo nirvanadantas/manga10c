@@ -1,28 +1,61 @@
 require 'gosu'
+require 'manga'
 
 class Jogador
   attr_reader :x, :y
+  attr_reader :placar
 
-  def initialize(window, x, y)
-    @x, @y = x, y
+  def initialize(window)
+    @window = window
+    @x, @y = window.width/2, 190
     @dir = :right
-	@dir1, @dir2, @esq1, @esq2 =
-		*Gosu::Image.load_tiles(window, "img.png", 135, 141, false)
-	@cur_image = @dir1			#começa virado à direita
-	@placar = 0
+    @step1, @step2,=
+    *Gosu::Image.load_tiles(window, "sprites.png", 100, 128, false)
+    @blup = Gosu::Sample.new(@window, "blup.wav")
+    @cur_image = @step1                         #começa virado à direita
+    @placar = 0   
+    @width = 100
+    @direcao=1
   end
-	def update
-		if (move_x > 0) then
-			@dir = :right
-			move_x.times do @x += 1 end 
-		end
- 
-		if (move_x < 0) then
-			@dir = :left
-			(-move_x).times do @x -= 1 end 
-         end
+  
+  def andar_direita
+        @direcao=1
+        @x = @x + 10                                        #chico anda 10px
+        if (@x > @window.width - 110) then                          #para chico à extrema direita da tela
+            @x = @window.width - 110                                #chico pára na direita
+        end
+  end
+  
+  def andar_esquerda
+      @direcao=-1
+        @x = @x - 10
+        if (@x < 110) then
+            @x = 110
+    end        
+  end
+
+  def update
+    if 
+      @cur_image = (Gosu::milliseconds / 175 % 2 == 0) ? @step1 : @step2        #da passinhos
+    else
+      @stop
     end
-	def draw
-		@cur_image.draw(@x, @y-134, 0, factor, 1.0)
-	end
+  end
+
+  def draw()
+    @cur_image.draw(@x,@y,1,@direcao)
+    
+  end
+  
+  def pega_mangas(mangas)
+    mangas.reject!  do |manga| 
+      if (Gosu::distance(@x, @y, manga.x, manga.y) < 45) then 
+        @blup.play
+        @placar+=10
+        true
+      else
+        false
+      end
+      end
+  end
 end
